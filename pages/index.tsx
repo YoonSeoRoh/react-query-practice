@@ -2,6 +2,7 @@ import type { NextPage } from 'next'
 import {useQuery} from "react-query"
 import axios from "axios";
 import { Fragment } from "react";
+import Link from "next/link";
 
 interface Post{
   id: number;
@@ -23,7 +24,11 @@ const Home: NextPage = () => {
     isLoading,
     isError,
     error,
-  } = useQuery<Post[], Error>("posts", getPosts);
+  } = useQuery<Post[], Error>("posts", getPosts, {
+    staleTime: 5 * 1000, //staleTime의 기본값은 0
+    refetchOnMount: true, //기본값
+    refetchOnWindowFocus: true, //기본값
+  });
   if (isError) {
     return <div>{error.message}</div>;
   }
@@ -31,6 +36,14 @@ const Home: NextPage = () => {
 
   return (
     <>
+      <nav style={{ display: "flex" }}>
+        <Link href="/parallel">
+          <a style={{ marginRight: "1rem" }}>Parallel Queries Page</a>
+        </Link>
+      </nav>
+
+      <br />
+
       <div>
         {isLoading ? (
           <div>Loading...</div>
